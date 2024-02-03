@@ -16,6 +16,7 @@ const RegisterPage = ({props}) => {
   // const [password, setPassword]=useState(' '); //The space also matters so do not use space, space does not mean null
   const [password, setPassword]=useState('');
   const [passwordVerify, setPasswordVerify] = useState(false);
+  const [showPassword,setShowPassword]=useState(false);
 
   function handleName(e){
     const nameVar=e.nativeEvent.text;
@@ -56,6 +57,7 @@ const RegisterPage = ({props}) => {
 
   const navigation=useNavigation();
   return (
+    <ScrollView keyboardDismissMode='true'>
     <View style={styles.loginContainer}>
         <Text style={styles.text_header}>Register</Text>
         <View style={styles.action}>
@@ -119,7 +121,23 @@ const RegisterPage = ({props}) => {
         <View style={styles.action}>
             {/* <FontAwesome name="lock" color="#420475" style={styles.smallIcon}/> */}
             
-            <TextInput placeholder="Password" style={styles.textInput} onChange={handlePassword}/>
+            <TextInput placeholder="Password" style={styles.textInput} onChange={handlePassword} secureTextEntry={showPassword}/>
+            <TouchableOpacity onPress={() => setShowPassword (!showPassword)}>
+            {password.length < 1 ? null: !showPassword? (
+              <Feather
+              name="eye-off"
+              style={{marginRight: -10}}
+              color={'green'}
+              size={43}
+              />
+              ): (
+              <Feather
+              name="eye"
+              style={{marginRight: -10}}
+              color={'green'}
+              size={43}
+              />)}
+              </TouchableOpacity>
             {password.length<1? null: passwordVerify? (
               <Feather name="check-circle" color="green" size={20} />
               ) : (
@@ -145,7 +163,7 @@ const RegisterPage = ({props}) => {
           </TouchableOpacity>
     </View>
     </View>
-    
+    </ScrollView>
   );
 }
 
