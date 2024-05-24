@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View ,TextInput, TouchableOpacity, ScrollView} from 'react-native'
+import { StyleSheet, Text, View ,TextInput, TouchableOpacity, ScrollView,Alert} from 'react-native'
 import React, { useState } from 'react'
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import {useNavigation} from '@react-navigation/native';
 import Error from 'react-native-vector-icons/MaterialIcons'
 import Fontisto from 'react-native-vector-icons/Fontisto'
+
+import axios from 'axios';
 
 const RegisterPage = ({props}) => {
   const [name,setName]=useState('');
@@ -17,6 +19,30 @@ const RegisterPage = ({props}) => {
   const [password, setPassword]=useState('');
   const [passwordVerify, setPasswordVerify] = useState(false);
   const [showPassword,setShowPassword]=useState(false);
+
+  function handleSubmit(){
+    const userData={
+      name,email,mobile,
+      password,
+    };
+    
+    if(nameVerify && emailVerify && passwordVerify && mobileVerify){
+    axios
+    .post("http://192.168.1.65:5001/register",userData)
+    .then(res=>{
+      console.log(res.data)
+    if(res.data.status=="ok"){
+        Alert.alert("Register Successful")
+        navigation.navigate('Login')
+    }else{
+      Alert.alert(JSON.stringify(res.data))
+    }})
+    .catch((e=>console.log(e)));
+    }
+    else{
+      Alert.alert("Fill all the details.")
+    }
+  }
 
   function handleName(e){
     const nameVar=e.nativeEvent.text;
@@ -126,23 +152,23 @@ const RegisterPage = ({props}) => {
             {password.length < 1 ? null: !showPassword? (
               <Feather
               name="eye-off"
-              style={{marginRight: -10}}
+              style={{marginRight: 10}}
               color={'green'}
-              size={43}
-              />
+              size={40}
+              />              
               ): (
               <Feather
               name="eye"
-              style={{marginRight: -10}}
+              style={{marginRight: 10}}
               color={'green'}
               size={43}
               />)}
               </TouchableOpacity>
-            {password.length<1? null: passwordVerify? (
+            {/* {password.length<1? null: passwordVerify? (
               <Feather name="check-circle" color="green" size={20} />
               ) : (
               <Error name="error" color="red" size={20} />
-              )}
+              )} */}
         </View>
         {password.length < 1 ? null :passwordVerify? null : (
           <Text
@@ -150,15 +176,12 @@ const RegisterPage = ({props}) => {
           marginLeft: 20,
           color: 'red',
           }}>
-          Please set secure Password.
+          Please use symbol, capital, characters and length 8.
           </Text>
           )}
-        
-
-        
-
+  
         <View style={styles.button}>
-          <TouchableOpacity style={styles.inBut}>
+          <TouchableOpacity style={styles.inBut} onPress={handleSubmit}>
             <Text style={styles.textSign}>Sign Up</Text>
           </TouchableOpacity>
     </View>
