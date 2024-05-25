@@ -1,22 +1,45 @@
-import { StyleSheet, Text, View ,TextInput, TouchableOpacity} from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View ,TextInput, TouchableOpacity, Alert} from 'react-native'
+import React,{useState} from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather'
 import {useNavigation} from '@react-navigation/native';
+import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginPage = ({props}) => {
   const navigation=useNavigation();
+  const [email,setEmail]=useState('');
+  const [password,setPassword]=useState('')
+
+  function handleLogin(){
+    console.log(email,password);
+    const userData={
+      email:email,
+      password,
+    }
+    axios
+    .post("http://192.168.1.65:5001/login-user",userData)
+    .then(res=>{
+      console.log(res.data)
+      if (res.data.status=="ok"){
+        Alert.alert("Login Successful");
+        AsyncStorage.setItem("token",res.data.data);
+        navigation.navigate('Home');
+      }
+    }
+  )
+  }
   return (
     <View style={styles.loginContainer}>
         <Text style={styles.text_header}>Login</Text>
         <View style={styles.action}>
             {/* <FontAwesome name="user-o" color="#420475" style={styles.smallIcon}/> I */}
-            <TextInput placeholder="Mobile or Email" style={styles.textInput} />
+            <TextInput placeholder="Mobile or Email" style={styles.textInput} onChange={e=>setEmail(e.nativeEvent.text)}/>
         </View>
         <View style={styles.action}>
             {/* <FontAwesome name="lock" color="#420475" style={styles.smallIcon}/> */}
             
-            <TextInput placeholder="Password" style={styles.textInput} />
+            <TextInput placeholder="Passwordddd" style={styles.textInput} onChange={e=>setPassword(e.nativeEvent.text)}/>
         </View>
 
         <View
@@ -30,7 +53,7 @@ const LoginPage = ({props}) => {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity style={styles.inBut}>
+          <TouchableOpacity style={styles.inBut} onPress={handleLogin}>
             <Text style={styles.textSign}>Log in</Text>
           </TouchableOpacity>
           <View style={{padding: 15}}>
