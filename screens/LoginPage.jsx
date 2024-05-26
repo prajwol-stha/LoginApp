@@ -24,6 +24,8 @@ const LoginPage = ({props}) => {
       if (res.data.status=="ok"){
         Alert.alert("Login Successful");
         AsyncStorage.setItem("token",res.data.data);
+        AsyncStorage.setItem("isLoggedin",JSON.stringify(true));
+        
         navigation.navigate('Home');
       }
     }
